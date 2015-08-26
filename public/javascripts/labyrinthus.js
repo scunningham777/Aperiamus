@@ -93,7 +93,6 @@ window.onload = function() {
             curAnswers[curDirectionInspected].visible = true;
 
             if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-                isRoomTransitionActive = true;
                 answerSelected(curDirectionInspected);
             }
         }
@@ -151,15 +150,35 @@ window.onload = function() {
         curAnswers.LEFT.visible = false;
     }
 
+    function clearQAndAs() {
+        curQuestion.text = "";
+        curAnswers.UP.text = "";
+        curAnswers.RIGHT.text = "";
+        curAnswers.DOWN.text = "";
+        curAnswers.LEFT.text = "";
+    }
+
+    var roomIncrement = 0;
+
     function generateQAndAs() {
-        curQuestion.text = "test";
-        curAnswers.UP.text = "up test";
-        curAnswers.RIGHT.text = "right test";
-        curAnswers.DOWN.text = "down test";
-        curAnswers.LEFT.text = "left test";
+        roomIncrement += 1;
+
+        curQuestion.text = "test " + roomIncrement;
+        curAnswers.UP.text = "up test" + roomIncrement;
+        curAnswers.RIGHT.text = "right test" + roomIncrement;
+        curAnswers.DOWN.text = "down test" + roomIncrement;
+        curAnswers.LEFT.text = "left test" + roomIncrement;
     }
 
     function answerSelected(selectedDirection) {
+        //Todo: check result of answer
+        //Todo: take action on the result
+
+        //assuming there will be a next room:
+        isRoomTransitionActive = true;
+
+        clearQAndAs();
+
         nextRoomLayer = map.createLayer('Tile Layer 1');
         nextRoomLayer.resizeWorld();
         nextRoomLayer.fixedToCamera = false;
@@ -220,9 +239,13 @@ window.onload = function() {
     }
 
     function roomSwitchCompleted() {
-        player.animations.stop();
+        player.animations.play('stand_' + curDirectionInspected.toLowerCase());
+
         curRoomLayer.destroy();
         curRoomLayer = nextRoomLayer;
+
+        generateQAndAs();
+
         isRoomTransitionActive = false;
     }
 
