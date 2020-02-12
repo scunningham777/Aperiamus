@@ -5,13 +5,12 @@ export class PreloadScene extends Phaser.Scene {
 		this.load.crossOrigin = 'anonymous';
 		this.load.maxParallelDownloads = Infinity;
 
-	    this.load.image('ground', 'assets/sprites/platform.png');
-	    this.load.spritesheet('dude', 'assets/sprites/dude.png', { frameWidth: 32, frameHeight: 48 });
+	    this.load.spritesheet('roman', 'assets/sprites/romanCharacters.png', { frameWidth: 32, frameHeight: 32 });
 
 	}	
 
 	create(): void {
-		this.scene.start('GameTitle');
+		this.scene.start('Main');
 	}
 
 }

@@ -1,7 +1,7 @@
 {
-  "name": "phaser3-typescript",
+  "name": "aperiamus",
   "version": "0.0.1",
-  "description": "Boilerplate for Phaser 3 in Typescript",
+  "description": "Latin Learning Game build with Phaser 3 in Typescript",
   "keywords": [
     "Phaser",
     "Phaser 3",
