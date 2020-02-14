@@ -1,5 +1,3 @@
-/// <reference path="./phaser.d.ts"/>
-
 import 'phaser';
 import { BootScene } from './scenes/boot';
 import { PreloadScene } from './scenes/preload';
@@ -11,13 +9,15 @@ import { WORLD_WIDTH, WORLD_HEIGHT } from './constants';
 
 import { Plugins } from '@capacitor/core';
 
-const config: GameConfig = {
+const config: Phaser.Types.Core.GameConfig = {
     width: WORLD_WIDTH,
     height: WORLD_HEIGHT,
     type: Phaser.AUTO,
     parent: 'game',
     backgroundColor: '#E8E8DA',
-    pixelArt: true,
+    render: {
+        pixelArt: true,
+    },
     zoom: 1,
 };
 
@@ -25,7 +25,7 @@ const { StatusBar, SplashScreen } = Plugins;
 
 export class Game extends Phaser.Game {
 
-    constructor(config: GameConfig) {
+    constructor(config: Phaser.Types.Core.GameConfig) {
         super(config);
 
         this.scene.add('Boot', BootScene, false);

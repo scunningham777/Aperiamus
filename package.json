@@ -26,8 +26,8 @@
   },
   "scripts": {
     "copy": "copy src\\index.html www\\index.html && xcopy /e /v /i /y assets www\\assets && copy src\\service-worker.js www\\service-worker.js && copy src\\manifest.json www\\manifest.json && copy sw-toolbox.js www\\sw-toolbox.js",
-    "dev": "webpack && npm run copy && webpack-dev-server --mode development",
-    "prod": "webpack && npm run copy && webpack-dev-server --mode production",
+    "dev": "webpack --mode development && npm run copy && webpack-dev-server",
+    "prod": "webpack --mode production && npm run copy && webpack-dev-server",
     "build": "webpack --mode production && npm run copy && npx cap copy"
   }
 }
