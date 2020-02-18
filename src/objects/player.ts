@@ -1,9 +1,4 @@
-enum Direction {
-    RIGHT = 'RIGHT',
-    LEFT = 'LEFT',
-    UP = 'UP',
-    DOWN = 'DOWN',
-};
+import { Cardinal_Direction } from '../utils';
 
 const ANIM_FRAME_RATE = 6;
 
@@ -13,8 +8,8 @@ export default class Player {
     private scene: Phaser.Scene;
     private x: number;
     private y: number;
-    private direction = Direction.DOWN;
-    private controls;
+    private direction = Cardinal_Direction.DOWN;
+    private controls: Phaser.Types.Input.Keyboard.CursorKeys;
 
     constructor(x: number, y: number, scene: Phaser.Scene) {
 
@@ -26,8 +21,6 @@ export default class Player {
         this.addToScene();
         this.addAnimations();
         this.initKeyHandlers();
-
-        console.log('player created');
     }
 
     get entity() {
@@ -38,32 +31,33 @@ export default class Player {
         this.player = this.scene.add.sprite(this.x, this.y, 'roman');
         this.player.setScale(2);
         this.player.setFrame(7);
+        this.player.setDepth(1);
     }
 
     addAnimations(): void {
         this.scene.anims.create({
-            key: Direction.UP,
+            key: Cardinal_Direction.UP,
             frames: this.scene.anims.generateFrameNumbers('roman', { start: 0, end: 2 }),
             frameRate: ANIM_FRAME_RATE,
             repeat: -1,
             yoyo: true,
         });
         this.scene.anims.create({
-            key: Direction.RIGHT,
+            key: Cardinal_Direction.RIGHT,
             frames: this.scene.anims.generateFrameNumbers('roman', { start: 3, end: 5 }),
             frameRate: ANIM_FRAME_RATE,
             repeat: -1,
             yoyo: true,
         });
         this.scene.anims.create({
-            key: Direction.DOWN,
+            key: Cardinal_Direction.DOWN,
             frames: this.scene.anims.generateFrameNumbers('roman', { start: 6, end: 8 }),
             frameRate: ANIM_FRAME_RATE,
             repeat: -1,
             yoyo: true,
         });
         this.scene.anims.create({
-            key: Direction.LEFT,
+            key: Cardinal_Direction.LEFT,
             frames: this.scene.anims.generateFrameNumbers('roman', { start: 9, end: 11 }),
             frameRate: ANIM_FRAME_RATE,
             repeat: -1,
@@ -71,51 +65,53 @@ export default class Player {
         });
     }
 
-    setDirection(newDirection: Direction) {
+    setDirection(newDirection: Cardinal_Direction) {
         switch(newDirection) {
-            case Direction.UP:
+            case Cardinal_Direction.UP:
                 this.player.setFrame(1);
-                this.direction = Direction.UP;
+                this.direction = Cardinal_Direction.UP;
                 break;
-            case Direction.RIGHT:
+            case Cardinal_Direction.RIGHT:
                 this.player.setFrame(4);
-                this.direction = Direction.RIGHT;
+                this.direction = Cardinal_Direction.RIGHT;
                 break;
-            case Direction.LEFT:
+            case Cardinal_Direction.LEFT:
                 this.player.setFrame(10);
-                this.direction = Direction.LEFT;
+                this.direction = Cardinal_Direction.LEFT;
                 break;
-            case Direction.DOWN:
+            case Cardinal_Direction.DOWN:
             default: 
                 this.player.setFrame(7);
-                this.direction = Direction.DOWN;
+                this.direction = Cardinal_Direction.DOWN;
         }
+
+        this.scene.events.emit('answerInspected', newDirection);
     }
 
     initKeyHandlers() {
         this.controls.up.on('down', () => {
-            this.setDirection(Direction.UP);
+            this.setDirection(Cardinal_Direction.UP);
         });
         this.controls.right.on('down', () => {
-            this.setDirection(Direction.RIGHT);
+            this.setDirection(Cardinal_Direction.RIGHT);
         });
         this.controls.down.on('down', () => {
-            this.setDirection(Direction.DOWN);
+            this.setDirection(Cardinal_Direction.DOWN);
         });
         this.controls.left.on('down', () => {
-            this.setDirection(Direction.LEFT);
+            this.setDirection(Cardinal_Direction.LEFT);
         });
         // TODO: set up swipe handlers
         // TODO: set up "confirm choice" handlers: space bar, double-tap
         this.controls.space.on('down', () => {
             this.scene.events.emit('answerSelected', this.direction);
             this.player.anims.play(this.direction, true);
-            setTimeout(() => {
-                console.log('here')
-                this.player.anims.stop();
-                this.setDirection(this.direction);
-            }, 2000);
         });
+    }
+    
+    stopMoving() {
+        this.player.anims.stop();
+        this.setDirection(this.direction);
     }
 
     update(): void {
