@@ -1,4 +1,5 @@
 import { Cardinal_Direction } from '../utils';
+import { GAME_SCALE } from '../constants';
 
 const ANIM_FRAME_RATE = 6;
 
@@ -29,7 +30,7 @@ export default class Player {
 
     addToScene(): void {
         this.player = this.scene.add.sprite(this.x, this.y, 'roman');
-        this.player.setScale(2);
+        this.player.setScale(GAME_SCALE);
         this.player.setFrame(7);
         this.player.setDepth(1);
     }
@@ -90,16 +91,24 @@ export default class Player {
 
     initKeyHandlers() {
         this.controls.up.on('down', () => {
-            this.setDirection(Cardinal_Direction.UP);
+            if (!this.player.anims.isPlaying) {
+                this.setDirection(Cardinal_Direction.UP);
+            }
         });
         this.controls.right.on('down', () => {
-            this.setDirection(Cardinal_Direction.RIGHT);
+            if (!this.player.anims.isPlaying) {
+                this.setDirection(Cardinal_Direction.RIGHT);
+            }
         });
         this.controls.down.on('down', () => {
-            this.setDirection(Cardinal_Direction.DOWN);
+            if (!this.player.anims.isPlaying) {
+                this.setDirection(Cardinal_Direction.DOWN);
+            }
         });
         this.controls.left.on('down', () => {
-            this.setDirection(Cardinal_Direction.LEFT);
+            if (!this.player.anims.isPlaying) {
+                this.setDirection(Cardinal_Direction.LEFT);
+            }
         });
         // TODO: set up swipe handlers
         // TODO: set up "confirm choice" handlers: space bar, double-tap
