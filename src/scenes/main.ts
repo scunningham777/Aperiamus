@@ -44,14 +44,12 @@ export class MainScene extends Phaser.Scene {
         });
         this.tileset = this.map.addTilesetImage('terrain', 'terrain', 32, 32);
         this.curRoomLayer = this.map.createBlankDynamicLayer('curRoom', this.tileset);
-        this.nextRoomLayer = this.map.createBlankDynamicLayer('nextRoom', this.tileset);
     }
 
     determineTileset() {
         this.curTilesetName = Phaser.Math.RND.pick(this.availableTilesetNames);
         const curTileset = this.map.layers.find(l => l.name === this.curTilesetName);
         this.curTilesetData = (curTileset.data as unknown) as number[][];
-        console.log(this.curTilesetName);
     }
 
     generateNewRoomOnLayer(layer: Phaser.Tilemaps.DynamicTilemapLayer, positionOffsetMultiplier: Phaser.Types.Math.Vector2Like) {
@@ -70,12 +68,13 @@ export class MainScene extends Phaser.Scene {
 
     startRoomTransition(direction: Cardinal_Direction) {
         const newRoomPositionMultiplier = multiplierFromDirection(direction);
+        this.nextRoomLayer = this.map.createBlankDynamicLayer('nextRoom', this.tileset);
         this.generateNewRoomOnLayer(this.nextRoomLayer, newRoomPositionMultiplier);
         const mapDimension = this.curRoomLayer.width * GAME_SCALE;
         const directionMultiplierCoords = multiplierFromDirection(direction);
         this.tweens.add({
-            targets: this.curRoomLayer,
-            x: '+=' + (directionMultiplierCoords.x * mapDimension * -1),    //reverse direction since the map it is the background moving
+            targets: [this.curRoomLayer, this.nextRoomLayer],
+            x: '+=' + (directionMultiplierCoords.x * mapDimension * -1),    //reverse direction since it is the background moving
             y: '+=' + (directionMultiplierCoords.y * mapDimension * -1),
             duration: this.roomTransitionDurationMS,
             ease: 'Linear',
@@ -87,6 +86,10 @@ export class MainScene extends Phaser.Scene {
     roomTransitionCompleted(tween: Phaser.Tweens.Tween) {
         this.player.stopMoving();
         tween.remove();
+        this.curRoomLayer.destroy();
+        this.curRoomLayer = this.nextRoomLayer;
+        this.nextRoomLayer = null;
+        this.curRoomLayer.layer.name = 'curRoom';
     }
 
     update(): void {
